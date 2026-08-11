@@ -5,11 +5,21 @@ from app.routers import auth, users, contacts, chats, messages, media, calls
 
 app = FastAPI(title="MoooChat API", version="0.1.0")
 
-# PLACEHOLDER: tighten allow_origins to your real custom domain before shipping,
-# e.g. ["https://moooChat.com"] instead of "*" - see Devgloyd CORS pattern.
+# Define explicitly allowed origins alongside your config setting
+origins = [
+    "https://mooochat.com",
+    "https://www.mooochat.com",
+    "http://localhost:8080",  # Common Flutter web dev port
+    "http://localhost:3000",
+]
+
+# Merge with ALLOWED_ORIGINS if it is defined as a list, or fall back to the explicit origins
+if isinstance(ALLOWED_ORIGINS, list):
+    origins = list(set(origins + ALLOWED_ORIGINS))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
